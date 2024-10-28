@@ -18,7 +18,7 @@ export const getComments = async (req: Request, res: Response, next: NextFunctio
 };
 
 
-// Yeni yorum oluşturma
+// Add new comment
 export const createComment = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { postId } = req.params;
