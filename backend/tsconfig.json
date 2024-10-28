@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "ES2020", // Specifies ECMAScript target version.
+    "module": "CommonJS", // Specifies module code generation.
+    "outDir": "./dist", // Redirects output structure to the 'dist' folder.
+    "rootDir": "./src", // Specify the root folder within your source files.
+    "strict": true, // Enable strict type-checking options.
+    "esModuleInterop": true, // Allows ES module imports for Node.
+    "forceConsistentCasingInFileNames": true, // Ensures consistent casing in imports.
+    "skipLibCheck": true, // Skips checking of declaration files (improves compilation speed).,
+    "moduleResolution": "Node",
+  },
+  "include": [
+    "src/**/*",
+    "src/types/express.d.ts"
+  ], // Includes all files in the 'src' folder.
+  "exclude": [
+    "node_modules",
+    "dist"
+  ] // Excludes 'node_modules' and output folders.
+}
