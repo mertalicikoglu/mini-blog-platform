@@ -25,7 +25,7 @@ const Posts: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
 
   // React Query kullanarak verileri sorgula
-  const { data: posts, error, isLoading, isFetching }: UseQueryResult<Post[], Error>  = useQuery(['posts', page, searchQuery], () => fetchPosts(page, searchQuery), {
+  const { data: posts, error, isLoading, isFetching }: UseQueryResult<Post[], Error> = useQuery(['posts', page, searchQuery], () => fetchPosts(page, searchQuery), {
     keepPreviousData: true,
   });
 
@@ -39,7 +39,10 @@ const Posts: React.FC = () => {
         type="text"
         placeholder="Search posts"
         value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
+        onChange={(e) => {
+          setSearchQuery(e.target.value);
+          setPage(1); // Arama yapıldığında sayfayı 1'e resetle
+        }}
       />
       {isFetching && <div>Fetching data...</div>}
       {posts && posts.length > 0 ? (
