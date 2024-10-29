@@ -1,22 +1,23 @@
 import React from 'react';
-import { Route, Navigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { useAuth } from './useAuth';
 
 interface ProtectedRouteProps {
-  element: React.ReactElement;
-  path: string;
-  redirectPath?: string;
+  children: React.ReactElement;
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element, path, redirectPath = '/signin' }) => {
-  const { user } = useAuth();
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
+  const { user, loading } = useAuth();
 
-  return (
-    <Route
-      path={path}
-      element={user ? element : <Navigate to={redirectPath} replace />}
-    />
-  );
+  if (loading) {
+    return <div>Loading...</div>; // Oturum durumu kontrol ediliyorsa yükleme mesajı göster
+  }
+
+  if (!user) {
+    return <Navigate to="/signin" replace />;
+  }
+
+  return children;
 };
 
 export default ProtectedRoute;
