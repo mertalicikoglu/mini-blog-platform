@@ -1,20 +1,29 @@
-// src/auth/AuthService.ts
+import { supabase } from './supabaseClient';
 
-import axios from 'axios';
-
-const API_URL = 'http://localhost:3001/api/auth';
-
+// Kullanıcı kaydolma
 export const signUp = async (email: string, password: string) => {
-  const response = await axios.post(`${API_URL}/signup`, { email, password });
-  return response.data;
+  const { data, error } = await supabase.auth.signUp({ email, password });
+  if (error) {
+    throw error;
+  }
+  const user = data.user;
+  return { user };
 };
 
+// Kullanıcı giriş yapma
 export const signIn = async (email: string, password: string) => {
-  const response = await axios.post(`${API_URL}/signin`, { email, password });
-  return response.data;
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error) {
+    throw error;
+  }
+  const user = data.user;
+  return { user };
 };
 
+// Kullanıcı çıkış yapma
 export const signOut = async () => {
-  const response = await axios.post(`${API_URL}/signout`);
-  return response.data;
+  const { error } = await supabase.auth.signOut();
+  if (error) {
+    throw error;
+  }
 };

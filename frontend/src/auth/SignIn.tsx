@@ -1,20 +1,25 @@
-// src/auth/SignIn.tsx
-
 import React, { useState } from 'react';
 import { useAuth } from './useAuth';
 
 function SignIn() {
-  const { signIn } = useAuth();
+  const { signIn } = useAuth(); // useAuth'u kullanarak signIn işlevine erişiyoruz
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await signIn(email, password);
+    try {
+      await signIn(email, password); // signIn işlevi kullanılarak giriş yapıyoruz
+      setError(null);
+    } catch (err) {
+      setError('Failed to sign in. Please check your credentials.');
+    }
   };
 
   return (
     <form onSubmit={handleSubmit}>
+      <h2>Sign In</h2>
       <input
         type="email"
         placeholder="Email"
@@ -28,6 +33,7 @@ function SignIn() {
         onChange={(e) => setPassword(e.target.value)}
       />
       <button type="submit">Sign In</button>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
     </form>
   );
 }
