@@ -55,12 +55,12 @@ const Posts: React.FC = () => {
       ) : (
         <p>No posts found.</p>
       )}
-      <div>
+      <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <button onClick={() => setPage((prev) => Math.max(prev - 1, 1))} disabled={page === 1}>
           Previous
         </button>
-        <span> Page {page} </span>
-        <button onClick={() => setPage((prev) => prev + 1)} disabled={posts && posts.length < 10}>
+        <span style={{ margin: '0 10px' }}> Page {page} </span>
+        <button onClick={() => setPage((prev) => (posts && posts.length === 10 ? prev + 1 : prev))} disabled={posts && posts.length < 10}>
           Next
         </button>
       </div>
