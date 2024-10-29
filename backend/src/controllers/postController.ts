@@ -95,12 +95,14 @@ export const deletePost = async (req: Request, res: Response, next: NextFunction
 };
 
 
+
 export const searchPosts = async (req: Request, res: Response) => {
+  const { search, page = 1, limit = 10 } = req.query;
+
   try {
-    const { query } = req.query;
-    const posts = await postModel.searchPosts(query as string);
-    res.json(posts);
+    const posts = await postModel.getPosts(search as string, Number(page), Number(limit));
+    res.status(200).json(posts);
   } catch (error) {
-    res.status(500).json({ error: (error as Error).message });
+    res.status(500).json({ error: 'An error occurred while searching posts' });
   }
-}
+};
