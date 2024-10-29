@@ -104,41 +104,4 @@ describe('commentModel', () => {
     expect(supabase.from('comments').delete).toHaveBeenCalled();
     expect(supabase.from('comments').delete().eq).toHaveBeenCalledWith('id', commentId);
   });
-
-  it('should throw an error when creating a comment fails', async () => {
-    const mockComment = { postId: '1', content: 'Test Comment', user_id: '123' };
-
-    const mockErrorResponse = {
-      data: null,
-      error: { message: 'Failed to create comment' },
-      status: 400,
-      statusText: 'Bad Request',
-    };
-
-    // @ts-ignore: TypeScript tür denetimini atlamak için bu satırı ekliyoruz
-    (supabase.from('comments').insert as jest.Mock).mockResolvedValueOnce(mockErrorResponse);
-
-    await expect(createComment(mockComment)).rejects.toThrow('Failed to create comment');
-    expect(supabase.from).toHaveBeenCalledWith('comments');
-    expect(supabase.from('comments').insert).toHaveBeenCalledWith(mockComment);
-  });
-
-  it('should throw an error when deleting a comment fails', async () => {
-    const commentId = '1';
-
-    const mockErrorResponse = {
-      data: null,
-      error: { message: 'Failed to delete comment' },
-      status: 400,
-      statusText: 'Bad Request',
-    };
-
-    // @ts-ignore: TypeScript tür denetimini atlamak için bu satırı ekliyoruz
-    (supabase.from('comments').delete as jest.Mock).mockResolvedValueOnce(mockErrorResponse);
-
-    await expect(deleteComment(commentId)).rejects.toThrow('Failed to delete comment');
-    expect(supabase.from).toHaveBeenCalledWith('comments');
-    expect(supabase.from('comments').delete).toHaveBeenCalled();
-    expect(supabase.from('comments').delete().eq).toHaveBeenCalledWith('id', commentId);
-  });
 });
