@@ -14,12 +14,19 @@ const CreatePost: React.FC = () => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [errors, setErrors] = useState<string[]>([]);
+  const [message, setMessage] = useState<string | null>(null); // Kullanıcı mesajları için durum
   const queryClient = useQueryClient();
 
   const mutation = useMutation(createPost, {
     onSuccess: () => {
       // Yeni post eklendiğinde post listesini güncelle
       queryClient.invalidateQueries('posts');
+      setTitle('');
+      setContent('');
+      setMessage('Post created successfully!');
+    },
+    onError: (error: any) => {
+      setMessage('Failed to create post: ' + error.message);
     },
   });
 
@@ -29,8 +36,6 @@ const CreatePost: React.FC = () => {
       // Veriyi Zod ile doğrula
       const validatedData = postSchema.parse({ title, content });
       mutation.mutate(validatedData);
-      setTitle('');
-      setContent('');
       setErrors([]);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -63,6 +68,7 @@ const CreatePost: React.FC = () => {
           ))}
         </div>
       )}
+      {message && <div style={{ color: message.includes('successfully') ? 'green' : 'red' }}>{message}</div>}
     </form>
   );
 };
