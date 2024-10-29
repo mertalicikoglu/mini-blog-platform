@@ -22,6 +22,27 @@ export const getAllPosts = async (page: number, limit: number): Promise<Post[]> 
     return data || [];
 };
 
+export const getPosts = async (search: string | undefined, page: number, limit: number) => {
+    let query = supabase.from('posts').select('*').order('created_at', { ascending: false });
+
+    // Eğer bir arama sorgusu varsa başlıkta arama yap
+    if (search && search.trim() !== '') {
+        query = query.ilike('title', `%${search}%`);
+    }
+
+    // Sayfalama işlemi
+    const offset = (page - 1) * limit;
+    query = query.range(offset, offset + limit - 1);
+
+    const { data, error } = await query;
+
+    if (error) {
+        throw new Error(error.message);
+    }
+
+    return data;
+};
+
 // Belirli bir postu getir
 export const getPostById = async (id: string): Promise<Post | null> => {
     const { data, error } = await supabase.from('posts').select('*').eq('id', id).single();
