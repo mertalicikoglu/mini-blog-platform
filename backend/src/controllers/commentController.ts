@@ -35,7 +35,8 @@ export const createComment = async (req: Request, res: Response, next: NextFunct
     res.status(201).json(newComment);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return res.status(400).json({ errors: error.errors });
+       res.status(400).json({ errors: error.errors });
+       return
     }
     next(error);
   }
@@ -60,7 +61,8 @@ export const updateComment = async (req: Request, res: Response, next: NextFunct
     res.json(updatedComment);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return res.status(400).json({ errors: error.errors });
+       res.status(400).json({ errors: error.errors });
+       return
     }
     next(error);
   }
