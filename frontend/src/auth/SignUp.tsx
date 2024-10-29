@@ -1,58 +1,64 @@
 import React, { useState } from 'react';
 import { useAuth } from './useAuth';
 
-const SignUp: React.FC = () => {
-  const { signUp } = useAuth();
+
+function SignUp() {
+  const { signUp } = useAuth(); // useAuth'u kullanarak signUp işlevine erişiyoruz
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
-
-    if (password !== confirmPassword) {
-      setError('Passwords do not match');
-      return;
-    }
-
     try {
-      await signUp(email, password);
-      // Redirect to another page or show a success message
+      await signUp(email, password); // signUp işlevi kullanılarak kayıt yapıyoruz
+      setError(null);
+      setSuccess('Account created successfully!');
+
     } catch (err) {
-      setError((err as Error).message);
+      setError('Failed to sign up. Please try again.');
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Sign Up</h2>
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        required
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        required
-      />
-      <input
-        type="password"
-        placeholder="Confirm Password"
-        value={confirmPassword}
-        onChange={(e) => setConfirmPassword(e.target.value)}
-        required
-      />
-      <button type="submit">Sign Up</button>
-      {error && <div style={{ color: 'red' }}>{error}</div>}
-    </form>
+    <div className="container d-flex justify-content-center align-items-center min-vh-100">
+      <div className="card shadow-sm" style={{ width: '100%', maxWidth: '400px' }}>
+        <div className="card-body">
+          <h2 className="card-title text-center mb-4">Sign Up</h2>
+          <form onSubmit={handleSubmit}>
+            <div className="mb-3">
+              <label htmlFor="email" className="form-label">Email address</label>
+              <input
+                type="email"
+                className="form-control"
+                id="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <label htmlFor="password" className="form-label">Password</label>
+              <input
+                type="password"
+                className="form-control"
+                id="password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+            <button type="submit" className="btn btn-primary w-100">Sign Up</button>
+            {error && <p className="text-danger mt-3 text-center">{error}</p>}
+            {success && <p className="text-success mt-3 text-center">{success}</p>}
+          </form>
+        </div>
+      </div>
+    </div>
   );
-};
+}
 
 export default SignUp;
