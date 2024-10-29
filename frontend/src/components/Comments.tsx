@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../auth/supabaseClient';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 interface Comment {
   id: string;
@@ -76,7 +77,7 @@ const Comments: React.FC<CommentsProps> = ({ postId }) => {
     }
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/comments`, {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/posts/${postId}/comments`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -99,7 +100,7 @@ const Comments: React.FC<CommentsProps> = ({ postId }) => {
 
   const handleDeleteComment = async (commentId: string) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/comments/${commentId}`, {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/posts/${postId}/comments/${commentId}`, {
         method: 'DELETE',
       });
       if (!response.ok) {
@@ -118,7 +119,7 @@ const Comments: React.FC<CommentsProps> = ({ postId }) => {
     }
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/comments/${commentId}`, {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/posts/${postId}/comments/${commentId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -141,33 +142,55 @@ const Comments: React.FC<CommentsProps> = ({ postId }) => {
   };
 
   return (
-    <div>
-      <h3>Comments</h3>
-      <textarea
-        value={newComment}
-        onChange={(e) => setNewComment(e.target.value)}
-        placeholder="Write your comment here..."
-      />
-      <button onClick={handleAddComment}>Add Comment</button>
-      {error && <div style={{ color: 'red' }}>{error}</div>}
-      <ul>
-        {comments.map((comment) => (
-          <li key={comment.id}>
-            <p>{comment.content}</p>
-            <button onClick={() => handleDeleteComment(comment.id)}>Delete</button>
-            <button
-              onClick={() => {
-                const updatedContent = prompt('Edit your comment:', comment.content);
-                if (updatedContent !== null) {
-                  handleUpdateComment(comment.id, updatedContent);
-                }
-              }}
-            >
-              Edit
-            </button>
-            <small>Posted by User {comment.user_id} on {new Date(comment.created_at).toLocaleString()}</small>
-          </li>
-        ))}
+    <div className="mt-5">
+      <h4 className="text-primary mb-4">Comments</h4>
+      <form onSubmit={(e) => { e.preventDefault(); handleAddComment(); }} className="mb-4">
+        <div className="input-group">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Add a comment..."
+            value={newComment}
+            onChange={(e) => setNewComment(e.target.value)}
+          />
+          <button className="btn btn-primary" type="submit">
+            Submit
+          </button>
+        </div>
+        {error && <div className="text-danger mt-2">{error}</div>}
+      </form>
+      <ul className="list-group">
+        {comments.length > 0 ? (
+          comments.map((comment) => (
+            <li key={comment.id} className="list-group-item mb-3 p-3 shadow-sm bg-light rounded">
+              <p className="mb-1 text-secondary">{comment.content}</p>
+              <div className="d-flex justify-content-between align-items-center">
+                <small className="text-muted">Posted by User {comment.user_id} on {new Date(comment.created_at).toLocaleString()}</small>
+                <div>
+                  <button
+                    className="btn btn-sm btn-outline-danger me-2"
+                    onClick={() => handleDeleteComment(comment.id)}
+                  >
+                    Delete
+                  </button>
+                  <button
+                    className="btn btn-sm btn-outline-primary"
+                    onClick={() => {
+                      const updatedContent = prompt('Edit your comment:', comment.content);
+                      if (updatedContent !== null) {
+                        handleUpdateComment(comment.id, updatedContent);
+                      }
+                    }}
+                  >
+                    Edit
+                  </button>
+                </div>
+              </div>
+            </li>
+          ))
+        ) : (
+          <li className="list-group-item text-center">No comments yet. Be the first to comment!</li>
+        )}
       </ul>
     </div>
   );
