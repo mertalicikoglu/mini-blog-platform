@@ -1,13 +1,22 @@
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
-import { supabase } from '../auth/supabaseClient';
 import { postSchema } from '../utils/validation';
 import { z } from 'zod';
 
 const createPost = async (newPost: { title: string; content: string }) => {
-  const { data, error } = await supabase.from('posts').insert(newPost).single();
-  if (error) throw new Error(error.message);
-  return data;
+  const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/posts`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(newPost),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to create post');
+  }
+
+  return await response.json();
 };
 
 const CreatePost: React.FC = () => {
