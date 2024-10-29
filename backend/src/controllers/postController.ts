@@ -5,7 +5,13 @@ import * as postModel from '../models/postModel';
 import { postSchema } from '../utils/validate';
 import { NotFoundError, UnauthorizedError } from '../errors/AppError';
 import { z } from 'zod';
+import { User } from '@supabase/supabase-js';
 
+declare module 'express' {
+  interface Request {
+    user?: User;
+  }
+}
 // Tüm postları getirme
 export const getPosts = async (req: Request, res: Response) => {
   try {
