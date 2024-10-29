@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, UseQueryResult } from 'react-query';
 import { z } from 'zod';
+import { Link } from 'react-router-dom'; // Link bileşenini ekliyoruz
 
 interface Post {
   id: number;
@@ -69,7 +70,9 @@ const Posts: React.FC = () => {
       {posts && posts.length > 0 ? (
         posts.map((post) => (
           <div key={post.id}>
-            <h3>{post.title}</h3>
+            <h3>
+              <Link to={`/post/${post.id}`}>{post.title}</Link>
+            </h3>
             <p>{post.content}</p>
           </div>
         ))
