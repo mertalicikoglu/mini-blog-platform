@@ -9,7 +9,10 @@ import { z } from 'zod';
 // Tüm postları getirme
 export const getPosts = async (req: Request, res: Response) => {
   try {
-    const posts = await postModel.getAllPosts();
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = 10; // Sayfa başına gönderi sayısı
+    const offset = (page - 1) * limit;
+    const posts = await postModel.getAllPosts(offset, limit);
     res.json(posts);
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });
@@ -31,7 +34,7 @@ export const getPostById = async (req: Request, res: Response, next: NextFunctio
 };
 
 // Yeni post oluşturma
-export const createPost = async (req: Request, res: Response): Promise<void> => {
+export const createPost = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const validatedData = postSchema.parse(req.body);
     const postData = {
@@ -45,7 +48,7 @@ export const createPost = async (req: Request, res: Response): Promise<void> => 
       res.status(400).json({ errors: error.errors });
       return
     }
-    res.status(500).json({ error: (error as Error).message });
+    next(error);
   }
 };
 

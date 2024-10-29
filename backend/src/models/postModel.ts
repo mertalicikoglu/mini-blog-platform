@@ -11,8 +11,13 @@ export interface Post {
 }
 
 // Tüm postları getir
-export const getAllPosts = async (): Promise<Post[]> => {
-    const { data, error } = await supabase.from('posts').select('*');
+export const getAllPosts = async (page: number, limit: number): Promise<Post[]> => {
+    const offset = (page - 1) * limit;
+    const { data, error } = await supabase
+        .from('posts')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .range(offset, offset + limit - 1);
     if (error) throw new Error(error.message);
     return data || [];
 };
@@ -26,9 +31,9 @@ export const getPostById = async (id: string): Promise<Post | null> => {
 
 // Yeni bir post oluştur
 export const createPost = async (post: Omit<Post, 'id' | 'created_at'>): Promise<Post> => {
-    const { data, error } = await supabase.from('posts').insert([post]).single();
+    const { data, error } = await supabase.from('posts').insert(post).single();
     if (error) throw new Error(error.message);
-    return data!;
+    return data;
 };
 
 // Belirli bir postu güncelle
@@ -52,10 +57,10 @@ export const searchPosts = async (searchTerm: string): Promise<Post[]> => {
 
 export const getUserPosts = async (userId: string): Promise<Post[]> => {
     const { data, error } = await supabase
-      .from('posts')
-      .select('*')
-      .eq('user_id', userId);
-  
+        .from('posts')
+        .select('*')
+        .eq('user_id', userId);
+
     if (error) throw new Error(error.message);
     return data || [];
-  };
+};
