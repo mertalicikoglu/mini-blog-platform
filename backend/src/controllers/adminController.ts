@@ -2,15 +2,15 @@ import { Request, Response, NextFunction } from 'express';
 import * as postModel from '../models/postModel';
 import { NotFoundError } from '../errors/AppError';
 
-// Tüm gönderileri getir
-export const getAllPosts = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const posts = await postModel.getAllPosts();
-    res.json(posts);
-  } catch (error) {
-    next(error);
-  }
-};
+// // Tüm gönderileri getir
+// export const getAllPosts = async (req: Request, res: Response, next: NextFunction) => {
+//   try {
+//     const posts = await postModel.getAllPosts();
+//     res.json(posts);
+//   } catch (error) {
+//     next(error);
+//   }
+// };
 
 // Bir gönderiyi sil
 export const deletePost = async (req: Request, res: Response, next: NextFunction) => {
