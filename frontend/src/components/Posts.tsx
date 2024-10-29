@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useQuery, UseQueryResult } from 'react-query';
 import { supabase } from '../auth/supabaseClient';
+import { z } from 'zod';
+
 interface Post {
   id: number;
   title: string;
@@ -23,14 +25,33 @@ const fetchPosts = async (page: number, query: string) => {
 const Posts: React.FC = () => {
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
+  const [formError, setFormError] = useState<string | null>(null);
+
+  // Zod doğrulama şeması
+  const searchQuerySchema = z.string().min(1, 'Search query must be at least 1 character').max(50, 'Search query must be less than 50 characters');
 
   // React Query kullanarak verileri sorgula
   const { data: posts, error, isLoading, isFetching }: UseQueryResult<Post[], Error> = useQuery(['posts', page, searchQuery], () => fetchPosts(page, searchQuery), {
     keepPreviousData: true,
+    enabled: !formError, // Form hatası olduğunda sorgulamayı engelle
   });
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+
+    // Doğrulama
+    const result = searchQuerySchema.safeParse(value);
+    if (!result.success) {
+      setFormError(result.error.errors[0].message);
+    } else {
+      setFormError(null);
+      setPage(1); // Arama yapıldığında sayfayı 1'e resetle
+    }
+  };
 
   return (
     <div>
@@ -39,11 +60,9 @@ const Posts: React.FC = () => {
         type="text"
         placeholder="Search posts"
         value={searchQuery}
-        onChange={(e) => {
-          setSearchQuery(e.target.value);
-          setPage(1); // Arama yapıldığında sayfayı 1'e resetle
-        }}
+        onChange={handleSearchChange}
       />
+      {formError && <div style={{ color: 'red' }}>{formError}</div>}
       {isFetching && <div>Fetching data...</div>}
       {posts && posts.length > 0 ? (
         posts.map((post) => (
