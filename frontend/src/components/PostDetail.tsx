@@ -13,8 +13,6 @@ const PostDetail: React.FC = () => {
   const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [commentContent, setCommentContent] = useState('');
-  const [commentError, setCommentError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -38,32 +36,6 @@ const PostDetail: React.FC = () => {
     fetchPost();
   }, [postId]);
 
-  const handleAddComment = async () => {
-    if (!commentContent.trim()) {
-      setCommentError('Comment cannot be empty');
-      return;
-    }
-
-    try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/posts/${postId}/comments`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ content: commentContent }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to add comment');
-      }
-
-      setCommentContent('');
-      setCommentError(null);
-    } catch (error) {
-      setCommentError((error as Error).message);
-    }
-  };
-
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
@@ -75,16 +47,6 @@ const PostDetail: React.FC = () => {
           <p>{post.content}</p>
         </div>
       )}
-      <div>
-        <h3>Add a Comment</h3>
-        <textarea
-          value={commentContent}
-          onChange={(e) => setCommentContent(e.target.value)}
-          placeholder="Write your comment here..."
-        />
-        <button onClick={handleAddComment}>Add Comment</button>
-        {commentError && <div style={{ color: 'red' }}>{commentError}</div>}
-      </div>
       <Comments postId={postId as string} />
     </div>
   );
