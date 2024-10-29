@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useQuery, UseQueryResult } from 'react-query';
-import { supabase } from '../auth/supabaseClient';
 import { z } from 'zod';
 
 interface Post {
@@ -11,15 +10,18 @@ interface Post {
 
 const fetchPosts = async (page: number, query: string) => {
   const limit = 10; // Sayfa başına gönderi sayısı
-  let request = supabase.from('posts').select('*').order('created_at', { ascending: false }).range((page - 1) * limit, page * limit - 1);
+  let url = `${import.meta.env.VITE_BACKEND_URL}/api/posts?page=${page}&limit=${limit}`;
 
   if (query) {
-    request = request.ilike('title', `%${query}%`);
+    url += `&search=${encodeURIComponent(query)}`;
   }
 
-  const { data, error } = await request;
-  if (error) throw new Error(error.message);
-  return data;
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error('Failed to fetch posts');
+  }
+
+  return await response.json();
 };
 
 const Posts: React.FC = () => {
