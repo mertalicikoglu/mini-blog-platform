@@ -1,27 +1,37 @@
 import React, { useState } from 'react';
+import { useMutation, useQueryClient } from 'react-query';
+import { supabase } from '../auth/supabaseClient';
+import { postSchema } from '../utils/validation';
 import { z } from 'zod';
 
-const postSchema = z.object({
-  title: z.string().min(1, 'Title is required').max(100, 'Title is too long'),
-  content: z.string().min(1, 'Content is required'),
-});
+const createPost = async (newPost: { title: string; content: string }) => {
+  const { data, error } = await supabase.from('posts').insert(newPost).single();
+  if (error) throw new Error(error.message);
+  return data;
+};
 
-interface PostFormProps {
-  onSubmit: (data: { title: string; content: string }) => void;
-}
-
-const PostForm: React.FC<PostFormProps> = ({ onSubmit }) => {
+const CreatePost: React.FC = () => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [errors, setErrors] = useState<string[]>([]);
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation(createPost, {
+    onSuccess: () => {
+      // Yeni post eklendiğinde post listesini güncelle
+      queryClient.invalidateQueries('posts');
+    },
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      // Gelen verileri doğrula
+      // Veriyi Zod ile doğrula
       const validatedData = postSchema.parse({ title, content });
+      mutation.mutate(validatedData);
+      setTitle('');
+      setContent('');
       setErrors([]);
-      onSubmit(validatedData);
     } catch (error) {
       if (error instanceof z.ZodError) {
         setErrors(error.errors.map((err) => err.message));
@@ -43,7 +53,9 @@ const PostForm: React.FC<PostFormProps> = ({ onSubmit }) => {
         value={content}
         onChange={(e) => setContent(e.target.value)}
       />
-      <button type="submit">Submit</button>
+      <button type="submit" disabled={mutation.isLoading}>
+        {mutation.isLoading ? 'Submitting...' : 'Submit'}
+      </button>
       {errors.length > 0 && (
         <div style={{ color: 'red' }}>
           {errors.map((error, index) => (
@@ -55,4 +67,4 @@ const PostForm: React.FC<PostFormProps> = ({ onSubmit }) => {
   );
 };
 
-export default PostForm;
+export default CreatePost;
