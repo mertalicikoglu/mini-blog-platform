@@ -12,7 +12,7 @@
   },
   "include": [
     "src/**/*",
-    "src/types/express.d.ts"
+    "types/express.d.ts"
   ], // Includes all files in the 'src' folder.
   "exclude": [
     "node_modules",
