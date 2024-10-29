@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useQuery, UseQueryResult } from 'react-query';
+import { useQuery, useQueryClient, UseQueryResult } from 'react-query';
 import { supabase } from '../auth/supabaseClient';
 interface Post {
     id: number;
@@ -20,9 +20,20 @@ const fetchPosts = async (page: number) => {
 
 const Posts: React.FC = () => {
     const [page, setPage] = useState(1);
-    const { data: posts, error, isLoading }: UseQueryResult<Post[], Error> = useQuery(['posts', page], () => fetchPosts(page), {
+    const queryClient = useQueryClient();
+
+    // TanStack Query kullanarak veriyi alıyoruz
+    const { data: posts, error, isLoading, isFetching }: UseQueryResult<Post[], Error> = useQuery(['posts', page], () => fetchPosts(page), {
         keepPreviousData: true,
+        staleTime: 5000, // 5 saniye boyunca veriyi taze tutar
     });
+
+    // Bir sonraki sayfa için ön yükleme yapıyoruz
+    React.useEffect(() => {
+        if (page < 10) {
+            queryClient.prefetchQuery(['posts', page + 1], () => fetchPosts(page + 1));
+        }
+    }, [page, queryClient]);
 
     if (isLoading) return <div>Loading...</div>;
     if (error) return <div>Error: {error.message}</div>;
@@ -30,6 +41,7 @@ const Posts: React.FC = () => {
     return (
         <div>
             <h2>Posts</h2>
+            {isFetching && <div>Fetching data...</div>}
             {posts && posts.length > 0 ? (
                 posts.map((post) => (
                     <div key={post.id}>
