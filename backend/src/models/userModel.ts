@@ -5,12 +5,13 @@ export interface UserProfile {
   username: string;
   email: string;
   bio?: string;
+  role: 'user' | 'admin';
 }
 
 // Kullanıcı profili al
 export const getUserProfile = async (id: string): Promise<UserProfile | null> => {
   const { data, error } = await supabase
-    .from<UserProfile>('users')
+    .from('users')
     .select('*')
     .eq('id', id)
     .single();
@@ -21,7 +22,7 @@ export const getUserProfile = async (id: string): Promise<UserProfile | null> =>
 // Kullanıcı profilini güncelle
 export const updateUserProfile = async (id: string, updatedData: Partial<UserProfile>): Promise<UserProfile | null> => {
   const { data, error } = await supabase
-    .from<UserProfile>('users')
+    .from('users')
     .update(updatedData)
     .eq('id', id)
     .single();
