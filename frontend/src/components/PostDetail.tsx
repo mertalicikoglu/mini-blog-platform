@@ -25,7 +25,7 @@ const PostDetail: React.FC = () => {
       try {
         setLoading(true);
 
-        // Backend'den gönderi detaylarını çek
+        // Fetch post by ID
         const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/posts/${postId}`);
         if (!response.ok) {
           throw new Error('Failed to fetch post');

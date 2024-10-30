@@ -40,7 +40,7 @@ describe('Posts Component', () => {
 
     render(<Posts />);
 
-    // Gönderilerin doğru bir şekilde yüklendiğini kontrol edelim
+    // Check that posts are loaded correctly
     await waitFor(() => {
       expect(screen.getByText('Test Post 1')).toBeInTheDocument();
       expect(screen.getByText('Test Post 2')).toBeInTheDocument();
@@ -48,7 +48,7 @@ describe('Posts Component', () => {
   });
 
   it('should add a new post when a new post is inserted', async () => {
-    // Mevcut gönderileri mock'layalım
+    // Mock existing posts first
     (supabase.from('posts').select as jest.Mock).mockResolvedValueOnce({
       data: mockPosts,
       error: null,
@@ -61,19 +61,19 @@ describe('Posts Component', () => {
       expect(screen.getByText('Test Post 2')).toBeInTheDocument();
     });
 
-    // Gerçek zamanlı olarak yeni bir gönderi ekleyelim
+    // Simulate real-time insertion of a new post
     const newPost = { id: '3', title: 'New Test Post', content: 'This is a new test post', user_id: '456', created_at: '2024-10-28' };
     const subscriptionCallback = (supabase.channel as jest.Mock).mock.calls[0][1].on.mock.calls[0][2];
     subscriptionCallback({ eventType: 'INSERT', new: newPost });
 
-    // Yeni gönderinin ekranda görüntülendiğini kontrol edelim
+    // Check that the new post is displayed
     await waitFor(() => {
       expect(screen.getByText('New Test Post')).toBeInTheDocument();
     });
   });
 
   it('should remove a post when a post is deleted', async () => {
-    // Mevcut gönderileri mock'layalım
+    // Mock existing posts
     (supabase.from('posts').select as jest.Mock).mockResolvedValueOnce({
       data: mockPosts,
       error: null,
@@ -86,12 +86,12 @@ describe('Posts Component', () => {
       expect(screen.getByText('Test Post 2')).toBeInTheDocument();
     });
 
-    // Gerçek zamanlı olarak bir gönderiyi silme
+    // Simulate real-time deletion of a post
     const deletedPost = { id: '1' };
     const subscriptionCallback = (supabase.channel as jest.Mock).mock.calls[0][1].on.mock.calls[0][2];
     subscriptionCallback({ eventType: 'DELETE', old: deletedPost });
 
-    // Silinen gönderinin ekranda olmadığını kontrol edelim
+    // Check that the deleted post is no longer displayed
     await waitFor(() => {
       expect(screen.queryByText('Test Post 1')).not.toBeInTheDocument();
     });

@@ -10,7 +10,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const { user, loading } = useAuth();
 
   if (loading) {
-    return <div>Loading...</div>; // Oturum durumu kontrol ediliyorsa yükleme mesajı göster
+    return <div>Loading...</div>; // Add a loading spinner
   }
 
   if (!user) {

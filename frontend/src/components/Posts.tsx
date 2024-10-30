@@ -11,7 +11,7 @@ interface Post {
 }
 
 const fetchPosts = async (page: number, query: string) => {
-  const limit = 10; // Sayfa başına gönderi sayısı
+  const limit = 10; // Number of posts per page
   let url = `${import.meta.env.VITE_BACKEND_URL}/api/posts?page=${page}&limit=${limit}`;
 
   if (query) {
@@ -32,13 +32,13 @@ const Posts: React.FC = () => {
   const [formError, setFormError] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  // Zod doğrulama şeması
+  // Verification schema for search query
   const searchQuerySchema = z.string().min(1, 'Search query must be at least 1 character').max(50, 'Search query must be less than 50 characters');
 
-  // React Query kullanarak verileri sorgula
+  // Using react-query to fetch posts
   const { data: posts, error, isLoading, isFetching }: UseQueryResult<Post[], Error> = useQuery(['posts', page, searchQuery], () => fetchPosts(page, searchQuery), {
     keepPreviousData: true,
-    enabled: !formError, // Form hatası olduğunda sorgulamayı engelle
+    enabled: !formError, // Disable the query when there is a form error
   });
 
   if (isLoading) return <div>Loading...</div>;
@@ -54,7 +54,7 @@ const Posts: React.FC = () => {
       setFormError(result.error.errors[0].message);
     } else {
       setFormError(null);
-      setPage(1); // Arama yapıldığında sayfayı 1'e resetle
+      setPage(1); // When the search query changes, reset the page to 1
     }
   };
 

@@ -3,7 +3,7 @@ import { useAuth } from './useAuth';
 import { useNavigate } from 'react-router-dom';
 
 function SignIn() {
-  const { signIn } = useAuth(); // useAuth'u kullanarak signIn işlevine erişiyoruz
+  const { signIn } = useAuth(); // Accessing the signIn function using useAuth
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -12,9 +12,9 @@ function SignIn() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await signIn(email, password); // signIn işlevi kullanılarak giriş yapıyoruz
+      await signIn(email, password); // Signing in using the signIn function
       setError(null);
-      navigate('/create-post'); // Başarılı girişten sonra /create-post sayfasına yönlendir
+      navigate('/create-post'); // Redirect to /create-post page after successful sign-in
     } catch (err) {
       setError('Failed to sign in. Please check your credentials.');
     }

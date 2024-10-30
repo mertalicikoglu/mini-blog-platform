@@ -39,7 +39,7 @@ describe('Comments Component', () => {
 
     render(<Comments postId={mockPostId} />);
 
-    // Yorumların doğru bir şekilde yüklendiğini kontrol edelim
+    // Check that comments are loaded correctly
     await waitFor(() => {
       expect(screen.getByText('Test Comment 1')).toBeInTheDocument();
       expect(screen.getByText('Test Comment 2')).toBeInTheDocument();
@@ -47,7 +47,7 @@ describe('Comments Component', () => {
   });
 
   it('should add a new comment when a new comment is inserted', async () => {
-    // İlk önce mevcut yorumları mock'layalım
+    // Mock existing comments first
     (supabase.from('comments').select as jest.Mock).mockResolvedValueOnce({
       data: mockComments,
       error: null,
@@ -60,21 +60,21 @@ describe('Comments Component', () => {
       expect(screen.getByText('Test Comment 2')).toBeInTheDocument();
     });
   
-    // Gerçek zamanlı olarak yeni bir yorum ekleyelim
+    // Simulate real-time insertion of a new comment
     const newComment = { id: '3', postId: mockPostId, content: 'New Test Comment', user_id: '456', created_at: '2024-10-28' };
   
-    // Kanal oluşturulurken verilen ismi kullanarak jest.mock içerisinde kanal ismiyle çağrı yapıyoruz
+    // Call the subscription callback with the new comment
     const subscriptionCallback = (supabase.channel as jest.Mock).mock.calls[0][1].on.mock.calls[0][2];
     subscriptionCallback({ eventType: 'INSERT', new: newComment });
   
-    // Yeni yorumun ekranda görüntülendiğini kontrol edelim
+    // Check that the new comment is displayed
     await waitFor(() => {
       expect(screen.getByText('New Test Comment')).toBeInTheDocument();
     });
   });
 
   it('should remove a comment when a comment is deleted', async () => {
-    // Mevcut yorumları mock'layalım
+    // Mock existing comments
     (supabase.from('comments').select as jest.Mock).mockResolvedValueOnce({
       data: mockComments,
       error: null,
@@ -87,12 +87,12 @@ describe('Comments Component', () => {
       expect(screen.getByText('Test Comment 2')).toBeInTheDocument();
     });
 
-    // Gerçek zamanlı olarak bir yorumu silme
+    // Simulate real-time deletion of a comment
     const deletedComment = { id: '1' };
     const subscriptionCallback = (supabase.channel as jest.Mock).mock.calls[0][1].on.mock.calls[0][2];
     subscriptionCallback({ eventType: 'DELETE', old: deletedComment });
 
-    // Silinen yorumun ekranda olmadığını kontrol edelim
+    // Check that the deleted comment is no longer displayed
     await waitFor(() => {
       expect(screen.queryByText('Test Comment 1')).not.toBeInTheDocument();
     });

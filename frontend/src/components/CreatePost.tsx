@@ -59,7 +59,7 @@ const CreatePost: React.FC = () => {
       return;
     }
     try {
-      // Veriyi Zod ile doğrula
+      // Verify the data before sending it to the server
       const validatedData = postSchema.parse({ title, content });
       const postData = { ...validatedData, user_id: user.id };
       mutation.mutate(postData);

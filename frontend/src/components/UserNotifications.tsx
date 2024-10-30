@@ -10,7 +10,7 @@ const UserNotifications: React.FC = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
   useEffect(() => {
-    // Gönderilerdeki değişiklikleri dinlemek için kanal oluştur
+    // create a channel to listen for changes in the posts table
     const postChannel = supabase
       .channel('posts')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'posts' }, (payload) => {
@@ -24,7 +24,7 @@ const UserNotifications: React.FC = () => {
       })
       .subscribe();
 
-    // Yorumlardaki değişiklikleri dinlemek için kanal oluştur
+    // create a channel to listen for changes in the comments table
     const commentChannel = supabase
       .channel('comments')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'comments' }, (payload) => {
@@ -38,7 +38,7 @@ const UserNotifications: React.FC = () => {
       })
       .subscribe();
 
-    // Abonelikleri temizle
+    // cleanup channels on unmount
     return () => {
       supabase.removeChannel(postChannel);
       supabase.removeChannel(commentChannel);

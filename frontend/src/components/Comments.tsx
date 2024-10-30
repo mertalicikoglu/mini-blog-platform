@@ -37,7 +37,7 @@ const Comments: React.FC<CommentsProps> = ({ postId }) => {
 
     fetchComments();
 
-    // Realtime subscription ekleyelim
+    // Add a realtime listener for comments
     const commentChannel = supabase
       .channel('realtime-comments')
       .on(

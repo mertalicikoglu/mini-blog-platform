@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { useAuth } from './useAuth';
 
-
 function SignUp() {
-  const { signUp } = useAuth(); // useAuth'u kullanarak signUp işlevine erişiyoruz
+  const { signUp } = useAuth(); // Accessing the signUp function using useAuth
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -12,10 +11,9 @@ function SignUp() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await signUp(email, password); // signUp işlevi kullanılarak kayıt yapıyoruz
+      await signUp(email, password); // Signing up using the signUp function
       setError(null);
       setSuccess('Account created successfully!');
-
     } catch (err) {
       setError('Failed to sign up. Please try again.');
     }
