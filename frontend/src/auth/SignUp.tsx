@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from './useAuth';
+import { useNavigate } from 'react-router-dom';
 
 function SignUp() {
   const { signUp } = useAuth(); // Accessing the signUp function using useAuth
@@ -7,6 +8,7 @@ function SignUp() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -14,6 +16,7 @@ function SignUp() {
       await signUp(email, password); // Signing up using the signUp function
       setError(null);
       setSuccess('Account created successfully!');
+      navigate('/'); // Redirect to /create-post page after successful sign-in
     } catch (err) {
       setError('Failed to sign up. Please try again.');
     }

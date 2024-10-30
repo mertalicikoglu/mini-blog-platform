@@ -14,7 +14,7 @@ function SignIn() {
     try {
       await signIn(email, password); // Signing in using the signIn function
       setError(null);
-      navigate('/'); // Redirect to /create-post page after successful sign-in
+      navigate('/'); // Redirect to / page after successful sign-in
     } catch (err) {
       setError('Failed to sign in. Please check your credentials.');
     }
