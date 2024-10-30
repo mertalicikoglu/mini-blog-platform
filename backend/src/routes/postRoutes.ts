@@ -18,10 +18,10 @@ router.get('/:id', getPostById);
 router.post('/', requireAuth, createPost);
 
 // Belirli bir gönderiyi güncelleme (sadece gönderi sahibi)
-router.put('/:id', isPostOwner, updatePost);
+router.put('/:id', requireAuth, isPostOwner, updatePost);
 
 // Belirli bir gönderiyi silme (sadece gönderi sahibi)
-router.delete('/:id', isPostOwner, deletePost);
+router.delete('/:id', requireAuth, isPostOwner, deletePost);
 
 
 
