@@ -3,6 +3,7 @@ import { useQuery, UseQueryResult } from 'react-query';
 import { z } from 'zod';
 import { Link, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { useAuth } from '../auth/useAuth';
 
 interface Post {
   id: number;
@@ -31,6 +32,7 @@ const Posts: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [formError, setFormError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   // Verification schema for search query
   const searchQuerySchema = z.string().min(1, 'Search query must be at least 1 character').max(50, 'Search query must be less than 50 characters');
@@ -62,8 +64,12 @@ const Posts: React.FC = () => {
     <div className="container mt-5">
       <div className="row justify-content-end">
         <div className="col-auto">
-          <Link to="/signin" className="btn btn-primary me-2">SignIn</Link>
-          <Link to="/signup" className="btn btn-primary">SignUp</Link>
+          {!user && (
+            <>
+              <Link to="/signin" className="btn btn-primary me-2">SignIn</Link>
+              <Link to="/signup" className="btn btn-primary">SignUp</Link>
+            </>
+          )}
         </div>
 
       </div>
