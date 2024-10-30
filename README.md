@@ -4,6 +4,17 @@
 
 This project consists of a Mini Blog Platform, divided into two main parts: a frontend and a backend. The platform allows users to create, read, update, and delete blog posts and comments. The frontend is built with React using Vite, while the backend is powered by Node.js and Express.
 
+## Live URL and Usage Information
+URL: https://mini-blog-platform-mu.vercel.app/
+
+To sign in as an admin, use the following credentials:
+
+User: alicikoglumert@gmail.com
+Password: 12345678
+Only the admin user can create posts. If you sign in with your own account, you will only be able to post comments.
+
+
+
 ### Features
 
 - **User Authentication:** Users can sign up and sign in using email and password.
@@ -78,5 +89,5 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Contact
 
-For any inquiries, please contact the project maintainer at [your-email@example.com].
+For any inquiries, please contact the project maintainer at alicikoglumert@gmail.com.
 
