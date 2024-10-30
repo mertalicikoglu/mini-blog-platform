@@ -4,16 +4,16 @@ import { requireAuth } from '../middleware/authMiddleware';
 
 const router = express.Router();
 
-// Kullanıcı profilini getir (kimlik doğrulaması gerekli)
+// Fetch user profile (authentication required)
 router.get('/profile', requireAuth, getUserProfile);
 
-// Kullanıcı profilini güncelle (kimlik doğrulaması gerekli)
+// Update user profile (authentication required)
 router.put('/profile', requireAuth, updateUserProfile);
 
-// Kullanıcının gönderilerini getir
+// Fetch user's posts
 router.get('/posts', requireAuth, getUserPosts);
 
-// Kullanıcının yorumlarını getir
+// Fetch user's comments
 router.get('/comments', requireAuth, getUserComments);
 
 export default router;

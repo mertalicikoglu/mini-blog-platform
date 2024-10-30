@@ -12,11 +12,12 @@ declare module 'express' {
     user?: User;
   }
 }
-// Tüm postları getirme
+
+// Get all posts
 export const getPosts = async (req: Request, res: Response) => {
   try {
     const page = parseInt(req.query.page as string) || 1;
-    const limit = 10; // Sayfa başına gönderi sayısı
+    const limit = 10; // Number of posts per page
     const offset = (page - 1) * limit;
     const posts = await postModel.getAllPosts(offset, limit);
     res.json(posts);
@@ -25,7 +26,7 @@ export const getPosts = async (req: Request, res: Response) => {
   }
 };
 
-// Belirli bir postu getirme
+// Get a post by ID
 export const getPostById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
@@ -39,7 +40,7 @@ export const getPostById = async (req: Request, res: Response, next: NextFunctio
   }
 };
 
-// Yeni post oluşturma
+// Create a new post
 export const createPost = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const validatedData = postSchema.parse(req.body);
@@ -58,7 +59,7 @@ export const createPost = async (req: Request, res: Response, next: NextFunction
   }
 };
 
-// Postu güncelleme
+// Update an existing post
 export const updatePost = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const { id } = req.params;
@@ -81,8 +82,7 @@ export const updatePost = async (req: Request, res: Response, next: NextFunction
   }
 };
 
-
-// Postu silme
+// Delete a post
 export const deletePost = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;

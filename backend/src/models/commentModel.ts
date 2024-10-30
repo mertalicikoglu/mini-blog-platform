@@ -10,7 +10,7 @@ export interface Comment {
   created_at: string;
 }
 
-// Belirli bir gönderiye ait tüm yorumları getir
+// Fetch all comments for a specific post
 export const getCommentsByPostId = async (id: string): Promise<Comment[]> => {
   const { data, error } = await supabase
     .from('comments')
@@ -21,7 +21,7 @@ export const getCommentsByPostId = async (id: string): Promise<Comment[]> => {
     throw new Error(error.message);
   }
 
-  return data as Comment[]; // Birden fazla satır döndürebilir
+  return data as Comment[]; // Can return multiple rows
 };
 
 export const getCommentById = async (id: string): Promise<Comment | null> => {
@@ -30,9 +30,9 @@ export const getCommentById = async (id: string): Promise<Comment | null> => {
   return data || null;
 }
 
-// Yeni bir yorum oluştur
+// Create a new comment
 export const createComment = async (comment: Omit<Comment, 'id' | 'created_at'>): Promise<Comment> => {
-  // Yeni yorumu ekleyin
+  // Insert the new comment
   const { data: insertData, error: insertError } = await supabase.from('comments').insert(comment).select().single();
 
   if (insertError) {
@@ -40,12 +40,12 @@ export const createComment = async (comment: Omit<Comment, 'id' | 'created_at'>)
     throw new Error(insertError.message);
   }
 
-  // Eğer `insertData` null ise, tekrar sorgulayarak veriyi getirin
+  // If `insertData` is null, query the data again
   if (!insertData) {
     const { data: queryData, error: queryError } = await supabase
       .from('comments')
       .select('*')
-      .eq('content', comment.content) // Eklenen yorumu tanımlamak için uygun bir filtre kullanın
+      .eq('content', comment.content) // Use an appropriate filter to identify the inserted comment
       .single();
 
     if (queryError) {
@@ -59,21 +59,20 @@ export const createComment = async (comment: Omit<Comment, 'id' | 'created_at'>)
   return insertData;
 };
 
-
-// Belirli bir yorumu güncelle
+// Update a specific comment
 export const updateComment = async (id: string, comment: Partial<Comment>): Promise<Comment> => {
   const { data: updatedData, error: insertError } = await supabase.from('comments').update(comment).eq('id', id).select().single();
   if (insertError) throw new Error(insertError.message);
   return updatedData!;
 };
 
-// Belirli bir yorumu sil
+// Delete a specific comment
 export const deleteComment = async (id: string): Promise<void> => {
   const { error } = await supabase.from('comments').delete().eq('id', id);
   if (error) throw new Error(error.message);
 };
 
-// Kullanıcının yorumlarını getir
+// Fetch comments by a specific user
 export const getUserComments = async (userId: string): Promise<Comment[]> => {
   const { data, error } = await supabase
     .from('comments')
@@ -83,4 +82,3 @@ export const getUserComments = async (userId: string): Promise<Comment[]> => {
   if (error) throw new Error(error.message);
   return data || [];
 };
-

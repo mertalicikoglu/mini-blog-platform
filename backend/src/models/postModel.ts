@@ -10,7 +10,7 @@ export interface Post {
     created_at: string;
 }
 
-// Tüm postları getir
+// Fetch all posts
 export const getAllPosts = async (page: number, limit: number): Promise<Post[]> => {
     const offset = (page - 1) * limit;
     const { data, error } = await supabase
@@ -25,12 +25,12 @@ export const getAllPosts = async (page: number, limit: number): Promise<Post[]> 
 export const getPosts = async (search: string | undefined, page: number, limit: number) => {
     let query = supabase.from('posts').select('*').order('created_at', { ascending: false });
 
-    // Eğer bir arama sorgusu varsa başlıkta arama yap
+    // If there is a search query, search in the title
     if (search && search.trim() !== '') {
         query = query.ilike('title', `%${search}%`);
     }
 
-    // Sayfalama işlemi
+    // Pagination
     const offset = (page - 1) * limit;
     query = query.range(offset, offset + limit - 1);
 
@@ -43,28 +43,28 @@ export const getPosts = async (search: string | undefined, page: number, limit: 
     return data;
 };
 
-// Belirli bir postu getir
+// Fetch a specific post
 export const getPostById = async (id: string): Promise<Post | null> => {
     const { data, error } = await supabase.from('posts').select('*').eq('id', id).single();
     if (error) throw new Error(error.message);
     return data;
 };
 
-// Yeni bir post oluştur
+// Create a new post
 export const createPost = async (post: Omit<Post, 'id' | 'created_at'>): Promise<Post> => {
     const { data, error } = await supabase.from('posts').insert(post).single();
     if (error) throw new Error(error.message);
     return data;
 };
 
-// Belirli bir postu güncelle
+// Update a specific post
 export const updatePost = async (id: string, post: Partial<Post>): Promise<Post> => {
     const { data, error } = await supabase.from('posts').update(post).eq('id', id).single();
     if (error) throw new Error(error.message);
     return data!;
 };
 
-// Belirli bir postu sil
+// Delete a specific post
 export const deletePost = async (id: string): Promise<void> => {
     const { error } = await supabase.from('posts').delete().eq('id', id);
     if (error) throw new Error(error.message);
@@ -76,6 +76,7 @@ export const searchPosts = async (searchTerm: string): Promise<Post[]> => {
     return data || [];
 }
 
+// Fetch posts by a specific user
 export const getUserPosts = async (userId: string): Promise<Post[]> => {
     const { data, error } = await supabase
         .from('posts')

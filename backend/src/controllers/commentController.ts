@@ -9,7 +9,7 @@ interface CustomRequest extends Request {
   postId?: string;
 }
 
-// Belirli bir gönderiye ait tüm yorumları getirme
+// Get all comments for a specific post
 export const getComments = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const postId  = (req as CustomRequest).postId;
@@ -24,17 +24,17 @@ export const getComments = async (req: Request, res: Response, next: NextFunctio
 };
 
 
-// Add new comment
+// Add a new comment
 export const createComment = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const post_id  = (req as CustomRequest).postId;
-    // Doğrulama
+    // Validate the request data
     const validatedData = commentSchema.parse({ ...req.body, post_id });
 
-    // Kullanıcı kimliğini ekleyelim
+    // Add user ID to the comment data
     const commentData = {
       ...validatedData,
-      user_id: req.user!.id, // requireAuth middleware'i sayesinde req.user mevcut olacak, bu nedenle "!" kullanıyoruz.
+      user_id: req.user!.id, // req.user will be available due to requireAuth middleware, hence the "!".
     };
 
     const newComment = await commentModel.createComment(commentData);
@@ -50,7 +50,7 @@ export const createComment = async (req: Request, res: Response, next: NextFunct
 
 
 
-// Yorumu güncelleme
+// Update an existing comment
 export const updateComment = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { commentId } = req.params;
@@ -75,7 +75,7 @@ export const updateComment = async (req: Request, res: Response, next: NextFunct
 };
 
 
-// Yorumu silme
+// Delete a comment
 export const deleteComment = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { commentId } = req.params;

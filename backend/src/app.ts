@@ -7,10 +7,10 @@ import { errorHandler } from './middleware/errorHandler';
 
 const app = express();
 app.use(cors());
-app.use(express.json()); // JSON desteği
+app.use(express.json()); // JSON support
 //initializeDatabase();
 
-// TypeScript için postId özelliğini Request türüne eklemek
+// Adding postId property to Request type for TypeScript
 interface CustomRequest extends Request {
   postId?: string;
 }
@@ -18,11 +18,11 @@ interface CustomRequest extends Request {
 app.use('/api/posts/:postId/comments', (req, res, next) => {
   (req as CustomRequest).postId = req.params.postId;
   next();
-}, commentRoutes); // Comment rotaları
+}, commentRoutes); // Comment routes
 
-app.use('/api/posts', postRoutes); // Post rotaları
+app.use('/api/posts', postRoutes); // Post routes
 
-// Global hata yakalama middleware'i
+// Global error handling middleware
 app.use(errorHandler);
 
 export default app;

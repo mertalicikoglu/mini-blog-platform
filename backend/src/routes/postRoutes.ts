@@ -1,28 +1,26 @@
 import express from 'express';
 import { getPosts, getPostById, createPost, updatePost, deletePost, searchPosts } from '../controllers/postController';
-import { requireAuth } from '../middleware/authMiddleware'; // Kimlik doğrulama kontrolü için middleware
-import { isPostOwner } from '../middleware/authorizationMiddleware'; // Gönderi sahibi kontrolü için middleware
+import { requireAuth } from '../middleware/authMiddleware'; // Middleware for authentication check
+import { isPostOwner } from '../middleware/authorizationMiddleware'; // Middleware for post ownership check
 
 const router = express.Router();
 
-// // Tüm gönderileri getir
+// Fetch all posts
 // router.get('/', getPosts);
 
-// Gönderileri arama
+// Search posts
 router.get('/', searchPosts);
 
-// Belirli bir gönderiyi getir
+// Fetch a specific post
 router.get('/:id', getPostById);
 
-// Yeni gönderi oluşturma (sadece kimliği doğrulanmış kullanıcılar)
+// Create a new post (only authenticated users)
 router.post('/', requireAuth, createPost);
 
-// Belirli bir gönderiyi güncelleme (sadece gönderi sahibi)
+// Update a specific post (only post owner)
 router.put('/:id', requireAuth, isPostOwner, updatePost);
 
-// Belirli bir gönderiyi silme (sadece gönderi sahibi)
+// Delete a specific post (only post owner)
 router.delete('/:id', requireAuth, isPostOwner, deletePost);
-
-
 
 export default router;

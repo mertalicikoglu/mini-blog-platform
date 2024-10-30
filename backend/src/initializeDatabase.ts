@@ -2,7 +2,7 @@ import { supabase } from './auth/supabaseClient';
 
 export const initializeDatabase = async () => {
   try {
-    // Posts tablosunu oluştur
+    // Create the Posts table
     const createPostsTableQuery = `
       CREATE TABLE IF NOT EXISTS posts (
         id SERIAL PRIMARY KEY,
@@ -12,7 +12,7 @@ export const initializeDatabase = async () => {
       );
     `;
 
-    // Comments tablosunu oluştur
+    // Create the Comments table
     const createCommentsTableQuery = `
       CREATE TABLE IF NOT EXISTS comments (
         id SERIAL PRIMARY KEY,
@@ -23,7 +23,7 @@ export const initializeDatabase = async () => {
       );
     `;
 
-    // SQL sorgularını çalıştır
+    // Execute the SQL queries
     const { error: postError } = await supabase.rpc('sql', { sql: createPostsTableQuery });
     if (postError) {
       throw new Error(`Error creating posts table: ${postError.message}`);

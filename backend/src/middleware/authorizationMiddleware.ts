@@ -12,7 +12,7 @@ export const isPostOwner = async (req: Request, res: Response, next: NextFunctio
              return;
         }
 
-        // Kullanıcı kimliğiyle karşılaştırıyoruz
+        // Comparing with user ID
         if (post.user_id !== req.user?.id) {
              res.status(403).json({ error: 'Forbidden: You do not own this post' });
              return
@@ -38,7 +38,7 @@ export const isCommentOwner = async (req: Request, res: Response, next: NextFunc
              return;
         }
 
-        // Kullanıcı kimliğiyle karşılaştırıyoruz
+        // Comparing with user ID
         if (comment.user_id !== req.user?.id) {
              res.status(403).json({ error: 'Forbidden: You do not own this comment' });
              return
@@ -53,6 +53,3 @@ export const isCommentOwner = async (req: Request, res: Response, next: NextFunc
         }
     }
 }
-
-
-

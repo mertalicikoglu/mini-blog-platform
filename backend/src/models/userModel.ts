@@ -8,7 +8,7 @@ export interface UserProfile {
   role: 'user' | 'admin';
 }
 
-// Kullanıcı profili al
+// Fetch user profile
 export const getUserProfile = async (id: string): Promise<UserProfile | null> => {
   const { data, error } = await supabase
     .from('users')
@@ -19,7 +19,7 @@ export const getUserProfile = async (id: string): Promise<UserProfile | null> =>
   return data;
 };
 
-// Kullanıcı profilini güncelle
+// Update user profile
 export const updateUserProfile = async (id: string, updatedData: Partial<UserProfile>): Promise<UserProfile | null> => {
   const { data, error } = await supabase
     .from('users')

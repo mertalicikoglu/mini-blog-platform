@@ -5,10 +5,10 @@ import * as commentModel from '../models/commentModel';
 import { z } from 'zod';
 import { NotFoundError, UnauthorizedError } from '../errors/AppError';
 
-// Kullanıcı profilini getir
+// Get user profile
 export const getUserProfile = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { id } = req.user!; // requireAuth middleware ile kimlik doğrulaması yapıldığı için req.user mevcut olacak
+    const { id } = req.user!; // req.user will be available due to requireAuth middleware
     const profile = await userModel.getUserProfile(id);
     if (!profile) {
       throw new NotFoundError('User profile not found');
@@ -19,12 +19,12 @@ export const getUserProfile = async (req: Request, res: Response, next: NextFunc
   }
 };
 
-// Kullanıcı profilini güncelle
+// Update user profile
 export const updateUserProfile = async (req: Request, res: Response, next: NextFunction)  => {
   try {
-    const { id } = req.user!; // requireAuth middleware ile kimlik doğrulaması yapıldığı için req.user mevcut olacak
+    const { id } = req.user!;
 
-    // Güncellenebilir alanları doğrulama
+    // Validate the request data
     const schema = z.object({
       username: z.string().optional(),
       bio: z.string().optional(),
@@ -45,9 +45,10 @@ export const updateUserProfile = async (req: Request, res: Response, next: NextF
   }
 };
 
+// Get user posts
 export const getUserPosts = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { id } = req.user!; // requireAuth middleware ile kimlik doğrulaması yapıldığı için req.user mevcut olacak
+    const { id } = req.user!; // req.user will be available due to requireAuth middleware
     const posts = await postModel.getUserPosts(id);
     res.json(posts);
   } catch (error) {
@@ -55,10 +56,10 @@ export const getUserPosts = async (req: Request, res: Response, next: NextFuncti
   }
 };
 
-
+// Get user comments
 export const getUserComments = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { id } = req.user!; // requireAuth middleware ile kimlik doğrulaması yapıldığı için req.user mevcut olacak
+    const { id } = req.user!; // req.user will be available due to requireAuth middleware
     const comments = await commentModel.getUserComments(id);
     res.json(comments);
   } catch (error) {
