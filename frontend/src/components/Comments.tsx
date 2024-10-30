@@ -172,7 +172,7 @@ const Comments: React.FC<CommentsProps> = ({ postId }) => {
             <li key={comment.id} className="list-group-item mb-3 p-3 shadow-sm bg-light rounded">
               <p className="mb-1 text-secondary">{comment.content}</p>
               <div className="d-flex justify-content-between align-items-center">
-              <small className="text-muted">Posted by {user?.email || 'Unknown User'} on {new Date(comment.created_at).toLocaleString()}</small>
+              <small className="text-muted">Posted by {user?.id === comment.user_id ?  user.email : 'Unknown User'} on {new Date(comment.created_at).toLocaleString()}</small>
                 {user?.id === comment.user_id && (
                   <div>
                     <button
