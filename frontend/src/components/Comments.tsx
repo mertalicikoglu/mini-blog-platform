@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../auth/supabaseClient';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { useAuth } from '../auth/useAuth';
 
 interface Comment {
   id: string;
@@ -18,6 +19,7 @@ const Comments: React.FC<CommentsProps> = ({ postId }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchComments = async () => {
@@ -81,6 +83,7 @@ const Comments: React.FC<CommentsProps> = ({ postId }) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${user?.access_token}`,
         },
         body: JSON.stringify({ content: newComment, postId }),
       });
@@ -102,6 +105,9 @@ const Comments: React.FC<CommentsProps> = ({ postId }) => {
     try {
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/posts/${postId}/comments/${commentId}`, {
         method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${user?.access_token}`,
+        },
       });
       if (!response.ok) {
         throw new Error('Failed to delete comment');
@@ -123,6 +129,7 @@ const Comments: React.FC<CommentsProps> = ({ postId }) => {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${user?.access_token}`,
         },
         body: JSON.stringify({ content: updatedContent }),
       });
@@ -165,7 +172,7 @@ const Comments: React.FC<CommentsProps> = ({ postId }) => {
             <li key={comment.id} className="list-group-item mb-3 p-3 shadow-sm bg-light rounded">
               <p className="mb-1 text-secondary">{comment.content}</p>
               <div className="d-flex justify-content-between align-items-center">
-                <small className="text-muted">Posted by User {comment.user_id} on {new Date(comment.created_at).toLocaleString()}</small>
+                <small className="text-muted">Posted by {user?.email || 'Unknown User'} on {new Date(comment.created_at).toLocaleString()}</small>
                 <div>
                   <button
                     className="btn btn-sm btn-outline-danger me-2"

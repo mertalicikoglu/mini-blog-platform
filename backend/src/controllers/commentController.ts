@@ -5,11 +5,17 @@ import * as commentModel from '../models/commentModel';
 import { commentSchema } from '../utils/validate';
 import { NotFoundError, UnauthorizedError } from '../errors/AppError';
 import { z } from 'zod';
+interface CustomRequest extends Request {
+  postId?: string;
+}
 
 // Belirli bir gönderiye ait tüm yorumları getirme
 export const getComments = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { postId } = req.params;
+    const postId  = (req as CustomRequest).postId;
+    if (!postId) {
+      throw new NotFoundError('Post ID is required');
+    }
     const comments = await commentModel.getCommentsByPostId(postId);
     res.json(comments);
   } catch (error) {
@@ -21,9 +27,9 @@ export const getComments = async (req: Request, res: Response, next: NextFunctio
 // Add new comment
 export const createComment = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { postId } = req.params;
+    const post_id  = (req as CustomRequest).postId;
     // Doğrulama
-    const validatedData = commentSchema.parse({ ...req.body, postId });
+    const validatedData = commentSchema.parse({ ...req.body, post_id });
 
     // Kullanıcı kimliğini ekleyelim
     const commentData = {
@@ -50,7 +56,7 @@ export const updateComment = async (req: Request, res: Response, next: NextFunct
     const { commentId } = req.params;
     // Doğrulama
     const validatedData = commentSchema.partial().parse(req.body);
-    const comment = await commentModel.getCommentsByPostId(commentId);
+    const comment = await commentModel.getCommentById(commentId);
     if (!comment) {
       throw new NotFoundError('Comment not found');
     }
@@ -73,7 +79,7 @@ export const updateComment = async (req: Request, res: Response, next: NextFunct
 export const deleteComment = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { commentId } = req.params;
-    const comment = await commentModel.getCommentsByPostId(commentId);
+    const comment = await commentModel.getCommentById(commentId);
     if (!comment) {
       throw new NotFoundError('Comment not found');
     }

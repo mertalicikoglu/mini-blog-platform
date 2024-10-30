@@ -10,7 +10,7 @@ export const postSchema = z.object({
 
 // Comment Doğrulama Şeması
 export const commentSchema = z.object({
-  postId: z.string().uuid("Invalid post ID"),
+  post_id: z.string(),
   content: z.string().min(1, "Content is required").max(500, "Content is too long"),
 });
 
