@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import  { createContext, useState, ReactNode, useEffect } from 'react';
 import { supabase } from './supabaseClient';
 
 interface AuthContextType {
@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
   }, []);
 
-  const signUp = async (email: string, password: string) => {
+  const signUp = async (/*email: string, password: string*/) => {
     const { data, error } = await supabase.auth.signInAnonymously();
     console.log(data, error);
     if (error) throw new Error(error.message);

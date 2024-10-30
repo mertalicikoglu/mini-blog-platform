@@ -1,6 +1,4 @@
-import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import { supabase } from '../../auth/supabaseClient';
 import Posts from '../Posts';
 
@@ -13,7 +11,7 @@ jest.mock('../../auth/supabaseClient', () => {
         on: jest.fn(),
         subscribe: jest.fn(),
       })),
-      channel: jest.fn((name: string) => ({
+      channel: jest.fn(() => ({
         on: jest.fn(),
         subscribe: jest.fn(),
         removeChannel: jest.fn(),
