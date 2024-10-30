@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useQuery, UseQueryResult } from 'react-query';
 import { z } from 'zod';
-import { Link } from 'react-router-dom'; // Link bileşenini ekliyoruz
+import { Link, useNavigate } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 interface Post {
   id: number;
@@ -29,6 +30,7 @@ const Posts: React.FC = () => {
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
   const [formError, setFormError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   // Zod doğrulama şeması
   const searchQuerySchema = z.string().min(1, 'Search query must be at least 1 character').max(50, 'Search query must be less than 50 characters');
@@ -57,36 +59,72 @@ const Posts: React.FC = () => {
   };
 
   return (
-    <div>
-      <h2>Posts</h2>
-      <input
-        type="text"
-        placeholder="Search posts"
-        value={searchQuery}
-        onChange={handleSearchChange}
-      />
-      {formError && <div style={{ color: 'red' }}>{formError}</div>}
-      {isFetching && <div>Fetching data...</div>}
-      {posts && posts.length > 0 ? (
-        posts.map((post) => (
-          <div key={post.id}>
-            <h3>
-              <Link to={`/post/${post.id}`}>{post.title}</Link>
-            </h3>
-            <p>{post.content}</p>
+    <div className="container mt-5">
+      <div className="row justify-content-end">
+        <div className="col-auto">
+          <Link to="/signin" className="btn btn-primary me-2">SignIn</Link>
+          <Link to="/signup" className="btn btn-primary">SignUp</Link>
+        </div>
+
+      </div>
+      <div className="row justify-content-center">
+        <div className="col-12 text-center mb-5">
+          <h1 className="display-4 text-primary">Welcome to the Blog</h1>
+          <p className="lead text-secondary">Explore the latest posts and share your thoughts!</p>
+        </div>
+      </div>
+      <div className="row mb-4 justify-content-center align-items-center">
+        <div className="col-12 col-md-5">
+          <input
+            type="text"
+            className="form-control border-primary shadow-sm"
+            placeholder="Search posts"
+            value={searchQuery}
+            onChange={handleSearchChange}
+          />
+          {formError && <div className="text-danger mt-2 text-center">{formError}</div>}
+        </div>
+        <div className="col-auto">
+          <button className="btn btn-success" onClick={() => navigate('/create-post')}>Create New Post</button>
+        </div>
+      </div>
+      <div className="row justify-content-center">
+        {isFetching && <div className="col-12 text-center">Fetching data...</div>}
+        {posts && posts.length > 0 ? (
+          <div className="col-12 col-md-8">
+            <ul className="list-group">
+              {posts.map((post) => (
+                <li key={post.id} className="list-group-item mb-3 p-4 shadow-sm bg-light rounded">
+                  <div className="d-flex justify-content-center align-items-start">
+                    <div>
+                      <h5 className="mb-1">
+                        <Link to={`/post/${post.id}`} className="text-decoration-none text-primary">
+                          {post.title}
+                        </Link>
+                      </h5>
+                      <p className="mb-1 text-muted">{post.content.substring(0, 100)}...</p>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
           </div>
-        ))
-      ) : (
-        <p>No posts found.</p>
-      )}
-      <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        <button onClick={() => setPage((prev) => Math.max(prev - 1, 1))} disabled={page === 1}>
-          Previous
-        </button>
-        <span style={{ margin: '0 10px' }}> Page {page} </span>
-        <button onClick={() => setPage((prev) => (posts && posts.length === 10 ? prev + 1 : prev))} disabled={posts && posts.length < 10}>
-          Next
-        </button>
+        ) : (
+          <div className="col-12 text-center">
+            <p>No posts found.</p>
+          </div>
+        )}
+      </div>
+      <div className="row mt-4">
+        <div className="col-12 d-flex justify-content-center">
+          <button className="btn btn-primary me-2" onClick={() => setPage((prev) => Math.max(prev - 1, 1))} disabled={page === 1}>
+            Previous
+          </button>
+          <span className="align-self-center"> Page {page} </span>
+          <button className="btn btn-primary ms-2" onClick={() => setPage((prev) => (posts && posts.length === 10 ? prev + 1 : prev))} disabled={posts && posts.length < 10}>
+            Next
+          </button>
+        </div>
       </div>
     </div>
   );

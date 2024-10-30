@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { postSchema } from '../utils/validation';
 import { z } from 'zod';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/useAuth';
 
 const createPost = async (newPost: { title: string; content: string; user_id: string }, token: string) => {
@@ -29,6 +29,7 @@ const CreatePost: React.FC = () => {
   const [errors, setErrors] = useState<string[]>([]);
   const [message, setMessage] = useState<string | null>(null);
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const mutation = useMutation(
     async (newPost: { title: string; content: string; user_id: string }) => {
@@ -43,6 +44,7 @@ const CreatePost: React.FC = () => {
         setTitle('');
         setContent('');
         setMessage('Post created successfully!');
+        navigate('/'); 
       },
       onError: (error: any) => {
         setMessage('Failed to create post: ' + error.message);

@@ -6,6 +6,7 @@ interface Post {
   id: string;
   title: string;
   content: string;
+  created_at: string;
 }
 
 const PostDetail: React.FC = () => {
@@ -40,14 +41,21 @@ const PostDetail: React.FC = () => {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div>
-      {post && (
-        <div>
-          <h2>{post.title}</h2>
-          <p>{post.content}</p>
+    <div className="container mt-5">
+      <div className="row justify-content-center">
+        <div className="col-12 col-md-10">
+          {post && (
+            <div className="card shadow-sm mb-5">
+              <div className="card-body">
+                <h2 className="card-title text-primary text-center mb-4">{post.title}</h2>
+                <p className="card-text text-muted text-justify">{post.content}</p>
+                <p className="text-secondary text-end">Posted on: {new Date(post.created_at).toLocaleDateString()}</p>
+              </div>
+            </div>
+          )}
+          <Comments postId={postId!} />
         </div>
-      )}
-      <Comments postId={postId as string} />
+      </div>
     </div>
   );
 };
