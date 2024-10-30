@@ -172,26 +172,28 @@ const Comments: React.FC<CommentsProps> = ({ postId }) => {
             <li key={comment.id} className="list-group-item mb-3 p-3 shadow-sm bg-light rounded">
               <p className="mb-1 text-secondary">{comment.content}</p>
               <div className="d-flex justify-content-between align-items-center">
-                <small className="text-muted">Posted by {user?.email || 'Unknown User'} on {new Date(comment.created_at).toLocaleString()}</small>
-                <div>
-                  <button
-                    className="btn btn-sm btn-outline-danger me-2"
-                    onClick={() => handleDeleteComment(comment.id)}
-                  >
-                    Delete
-                  </button>
-                  <button
-                    className="btn btn-sm btn-outline-primary"
-                    onClick={() => {
-                      const updatedContent = prompt('Edit your comment:', comment.content);
-                      if (updatedContent !== null) {
-                        handleUpdateComment(comment.id, updatedContent);
-                      }
-                    }}
-                  >
-                    Edit
-                  </button>
-                </div>
+              <small className="text-muted">Posted by {user?.email || 'Unknown User'} on {new Date(comment.created_at).toLocaleString()}</small>
+                {user?.id === comment.user_id && (
+                  <div>
+                    <button
+                      className="btn btn-sm btn-outline-danger me-2"
+                      onClick={() => handleDeleteComment(comment.id)}
+                    >
+                      Delete
+                    </button>
+                    <button
+                      className="btn btn-sm btn-outline-primary"
+                      onClick={() => {
+                        const updatedContent = prompt('Edit your comment:', comment.content);
+                        if (updatedContent !== null) {
+                          handleUpdateComment(comment.id, updatedContent);
+                        }
+                      }}
+                    >
+                      Edit
+                    </button>
+                  </div>
+                )}
               </div>
             </li>
           ))
