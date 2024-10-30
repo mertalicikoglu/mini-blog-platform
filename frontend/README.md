@@ -24,7 +24,8 @@ This is the frontend for the mini blog platform, developed using React and style
 1. Clone the repository:
 
    ```sh
-   git clone https://github.com/your-repository/mini-blog-frontend.git
+   git clone https://github.com/mertalicikoglu/mini-blog-platform.git
+   cd mini-blog-platform
    cd frontend
    ```
 

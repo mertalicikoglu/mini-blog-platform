@@ -14,6 +14,7 @@ This is the backend service for the Mini Blog Platform. It is built using Node.j
 
    ```sh
    git clone https://github.com/mertalicikoglu/mini-blog-platform.git
+   cd mini-blog-platform
    cd backend
    ```
 
