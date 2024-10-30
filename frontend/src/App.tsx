@@ -8,6 +8,7 @@ import CreatePost from './components/CreatePost';
 import Posts from './components/Posts';
 import PostDetail from './components/PostDetail';
 import ProtectedRoute from './auth/ProtectedRoute';
+import EditPost from './components/EditPost';
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const queryClient = new QueryClient();
@@ -25,6 +26,14 @@ const App: React.FC = () => {
               element={
                 <ProtectedRoute>
                   <CreatePost />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/edit-post/:postId"
+              element={
+                <ProtectedRoute>
+                  <EditPost />
                 </ProtectedRoute>
               }
             />
